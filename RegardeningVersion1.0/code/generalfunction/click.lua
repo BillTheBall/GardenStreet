@@ -1,6 +1,7 @@
 click = {}
 
 RightClicking = false
+ScrollPosition = 0
 local CurrentlyRClicking = false
 local holding = 0
 function click:load() end
@@ -17,6 +18,11 @@ function click:update(dt)
 	if CurrentlyRClicking then
 		holding = holding - dt
 	end
+	ScrollPosition = 0
+end
+
+function love.wheelmoved(x, y)
+	ScrollPosition = y
 end
 
 function love.mousepressed(x, y, button, istouch, presses)

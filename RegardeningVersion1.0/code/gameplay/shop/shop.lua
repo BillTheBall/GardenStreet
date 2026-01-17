@@ -1,37 +1,53 @@
 shop = {}
 function shop:load()
-	scrolledposition = 250
+	scrolledposition = 50
 	shopOrder = 1
 	Coinage = 1000
+	HoveredoverShopOption = false
+	Buying = false
 end
 
 function shop:update(dt)
-	for i, v in pairs(PlantsInGame) do
-		if
-			mouseY > v.shopY
-			and mouseY < v.shopY + (225 * actwindowWidth / 136)
-			and mouseX > v.shopX
-			and mouseX < v.shopX + (225 * actwindowWidth / 130)
-		then
-			HoveredoverShopOption = true
-		else
-			HoveredoverShopOption = false
-		end
-	end
 	if RightClicking then
 		for i, v in pairs(PlantsInGame) do
 			if
-				mouseY > v.shopY
-				and mouseY < v.shopY + (225 * actwindowWidth / 136)
+				mouseY > v.shopY - 145
+				and mouseY < v.shopY + (225 * actwindowWidth / 50) - 145
 				and mouseX > v.shopX
-				and mouseX < v.shopX + (225 * actwindowWidth / 130)
+				and mouseX < v.shopX + (225 * actwindowWidth / 50)
+				and not Buying
 			then
-				if Coinage > v.coinsCosted then
+				if Coinage >= v.coinsCosted then
+					Coinage = Coinage - v.coinsCosted
 					PlantMode = i
+					Buying = true
 					v.bought = true
 				end
 			end
 		end
+	end
+
+	for i, v in pairs(PlantsInGame) do
+		print(scrolledposition)
+
+		if ScrollPosition < 0 then
+			v.order = v.order - (ScrollPosition * 30 / 60)
+		elseif ScrollPosition > 0 then
+			v.order = v.order - (ScrollPosition * 30 / 60)
+		end
+	end
+
+	if ScrollPosition < 0 then
+		scrolledposition = scrolledposition - (ScrollPosition * 30)
+	elseif ScrollPosition > 0 then
+		scrolledposition = scrolledposition - (ScrollPosition * 30)
+	end
+
+	if scrolledposition > 60 then
+		for i, v in pairs(PlantsInGame) do
+			v.order = v.order + (ScrollPosition * 30 / 60)
+		end
+		scrolledposition = 50
 	end
 end
 
@@ -40,10 +56,10 @@ function newShopPlace()
 	y = 0
 
 	for i, v in pairs(PlantsInGame) do
-		love.graphics.draw(v.Seeds, v.shopX, v.shopY, 0, actwindowWidth / 130, actwindowHeight / 136)
+		love.graphics.draw(v.Seeds, v.shopX, v.shopY - 145, 0, actwindowWidth / 50, actwindowHeight / 50)
 		shopOrder = shopOrder + 1
 
-		v.shopY = v.order * 60
+		v.shopY = v.order * 180
 		love.graphics.print(tostring(v.shopY), v.shopX, v.shopY)
 
 		if mouseY > v.shopY and mouseY < v.shopY + (225 * actwindowWidth / 136) then
@@ -56,34 +72,7 @@ function newShopPlace()
 	end
 end
 
-function love.wheelmoved(x, y)
-	for i, v in pairs(PlantsInGame) do
-		if y < 0 then
-			v.order = v.order - (y * 30 / 60)
-		elseif y > 0 then
-			v.order = v.order - (y * 30 / 60)
-		end
-	end
-
-	if y < 0 then
-		scrolledposition = scrolledposition - (y * 30)
-	elseif y > 0 then
-		scrolledposition = scrolledposition - (y * 30)
-	end
-
-	if scrolledposition < 0 then
-		scrolledposition = 0
-	elseif scrolledposition > 550 then
-		scrolledposition = 550
-	end
-end
-
 function shop:draw(dt)
 	love.graphics.setColor(255 / 255, 255 / 255, 255 / 255)
 	newShopPlace()
-	for i, v in pairs(PlantsInGame) do
-		if v.bought then
-			love.graphics.draw(v.Seeds, mouseX, mouseY, 0, actwindowWidth / 130, actwindowHeight / 136)
-		end
-	end
 end
