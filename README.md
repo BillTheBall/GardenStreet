@@ -1,0 +1,2 @@
+# Garden Street
+A very simple gardening game with 2 versions currently, the ArchivedVersione0.1, and the RegardeningVersion1.0, with the main difference being that the regardening version is a MUCH better code base (More readable, and just more functional), but has less features due to a slight abandonment in development. On the other hand ArchivedVersioned0.1 is a mostly fully completed game, with now the only real limit being a lack of art, and discontent!
